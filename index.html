@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NFL Real Time Scores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .scores {
+            margin: 0 auto;
+            width: 50%;
+            padding: 20px;
+        }
+        .game {
+            margin-bottom: 20px;
+        }
+        .game div {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>NFL Real Time Scores</h1>
+    <div id="scores" class="scores"></div>
+    
+    <script>
+        const scoresDiv = document.getElementById('scores');
+
+        function fetchScores() {
+            fetch('https://your-netlify-site.netlify.app/.netlify/functions/getScores')
+                .then(response => response.json())
+                .then(data => {
+                    scoresDiv.innerHTML = '';
+                    data.games.forEach(game => {
+                        let gameDiv = document.createElement('div');
+                        gameDiv.classList.add('game');
+                        gameDiv.innerHTML = `
+                            <div>Home: ${game.homeTeam} - ${game.homeScore}</div>
+                            <div>Away: ${game.awayTeam} - ${game.awayScore}</div>
+                        `;
+                        scoresDiv.appendChild(gameDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        fetchScores(); // Fetch scores when the page loads
+        setInterval(fetchScores, 60000); // Fetch scores every 60 seconds
+    </script>
+</body>
+</html>
+
